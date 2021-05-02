@@ -1,0 +1,71 @@
+﻿<Window x:Class="ImageFileExplorerV2.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageFileExplorerV2.Views"
+        mc:Ignorable="d"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        x:Name="mainWindow"
+        Title="MainWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <ResourceDictionary Source="..\StyleRecourceDictionary.xaml"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- C0 -->
+        <DockPanel Margin="2">
+
+            <Button DockPanel.Dock="Bottom" Content="Add" 
+                    Command="{Binding AddFolderCommand}"
+                    Style="{StaticResource buttonStyleAdd}"/>
+
+            <ListBox SelectedItem="{Binding SelectedFolder}"
+                     ItemsSource="{Binding Folders}"
+                     ItemTemplate="{StaticResource listBoxItemTemplateFolder}"
+                     ItemContainerStyle="{StaticResource listBoxItemStyleFolder}"/>
+        </DockPanel>
+        
+        <!-- C1 -->
+        <ListBox Grid.Column="1" Margin="2"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.CanContentScroll="False"
+                 SelectedIndex="{Binding SelectedImgIndex}"
+                 SelectedItem="{Binding SelectedImage}"
+                 ItemsSource="{Binding SelectedFolder.Images}"
+                 ItemTemplate="{StaticResource listBoxItemTemplateImage}"/>
+
+        <!-- C2 -->
+        <DockPanel Grid.Column="2">
+
+            <UniformGrid Rows="1" DockPanel.Dock="Bottom">
+                
+                <Button Content="{md:PackIcon Kind=ChevronDoubleLeft,Size=30}" 
+                        Command="{Binding GoLeftCommand}"
+                        Style="{StaticResource buttonStyleArrow}"/>
+
+                <Button Content="{md:PackIcon Kind=ChevronDoubleRight,Size=30}" 
+                        Command="{Binding GoRightCommand}"
+                        Style="{StaticResource buttonStyleArrow}"/>
+            </UniformGrid>
+            
+            <Image Margin="10"
+                   Source="{Binding SelectedImage.Path}"/>
+        </DockPanel>
+
+    </Grid>
+</Window>
