@@ -3,6 +3,7 @@ using ImageFileExplorerV2.Models;
 using ImageFileExplorerV2.Services;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PropertyChanged;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -47,36 +48,47 @@ namespace ImageFileExplorerV2.ViewModels
 
         private void InitializeCommands()
         {
-            AddFolderCommand = new RelayCommand(AddFolder);
+            AddFolderCommand = new RelayCommand(async () => 
+            {
+                await AddFolderAsync();
+            });
             RemoveFolderCommand = new RelayCommand<Folder>(x => Folders.Remove(x));
             GoRightCommand = new RelayCommand(() => SelectedImgIndex++, () => SelectedImgIndex < ImageSourceLength() - 1);
             GoLeftCommand = new RelayCommand(() => SelectedImgIndex--, () => SelectedImgIndex > 0);
         }
 
+        private async Task AddFolderAsync()
+        {
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string path = dialog.FileName;
+
+                if (!Folders.Any(x => x.Path == path)) // contains
+                {
+                    var folder = await _folderService.GetFolderAsync(path);
+                    Folders.Add(folder);
+                }
+                else
+                    MessageBox.Show("This folder has already been added");
+
+            }
+        }
+
         private void AddFolder()
         {
-            //var timer = new Timer(o => ProgressValue += 5, null, 50, 1000);
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string path = dialog.FileName;
 
-            //Task.Run(() =>
-            //{
-
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                if (!Folders.Any(x => x.Path == path)) // contains
                 {
-                    string path = dialog.FileName;
-
-                    if (!Folders.Any(x => x.Path == path)) // contains
-                    {
-                        var folder = _folderService.GetFolder(path);
-                        Folders.Add(folder);
-                        //timer.Dispose();
-                        //ProgressValue = 100;
-                        //ProgressValue = 0;
-                    }
-                    else
-                        MessageBox.Show("This folder has already been added");
-                
-                } 
-            //});
+                    var folder = _folderService.GetFolder(path);
+                    Folders.Add(folder);
+                }
+                else
+                    MessageBox.Show("This folder has already been added");
+            
+            }
         }
 
         private int ImageSourceLength()
