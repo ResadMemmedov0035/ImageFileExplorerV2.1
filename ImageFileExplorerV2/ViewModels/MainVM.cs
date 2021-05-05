@@ -5,7 +5,10 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using PropertyChanged;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace ImageFileExplorerV2.ViewModels
 {
@@ -13,6 +16,7 @@ namespace ImageFileExplorerV2.ViewModels
     public class MainVM
     {
         private IImageFolderService _folderService;
+        private CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true };
 
         private int selectedImgIndex = -1;
 
@@ -27,6 +31,7 @@ namespace ImageFileExplorerV2.ViewModels
                 GoLeftCommand.RaiseCanExecuteChanged();
             }
         }
+        //public int ProgressValue { get; set; }
 
 
         public RelayCommand AddFolderCommand { get; set; }
@@ -42,7 +47,7 @@ namespace ImageFileExplorerV2.ViewModels
 
         private void InitializeCommands()
         {
-            AddFolderCommand = new RelayCommand(() => AddFolder());
+            AddFolderCommand = new RelayCommand(AddFolder);
             RemoveFolderCommand = new RelayCommand<Folder>(x => Folders.Remove(x));
             GoRightCommand = new RelayCommand(() => SelectedImgIndex++, () => SelectedImgIndex < ImageSourceLength() - 1);
             GoLeftCommand = new RelayCommand(() => SelectedImgIndex--, () => SelectedImgIndex > 0);
@@ -50,20 +55,28 @@ namespace ImageFileExplorerV2.ViewModels
 
         private void AddFolder()
         {
-            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
+            //var timer = new Timer(o => ProgressValue += 5, null, 50, 1000);
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                string path = dialog.FileName;
+            //Task.Run(() =>
+            //{
 
-                if (!Folders.Any(x => x.Path == path)) // contains
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    var folder = _folderService.GetFolder(path);
-                    Folders.Add(folder);
-                }
-                else
-                    MessageBox.Show("This folder has already been added");
-            }
+                    string path = dialog.FileName;
+
+                    if (!Folders.Any(x => x.Path == path)) // contains
+                    {
+                        var folder = _folderService.GetFolder(path);
+                        Folders.Add(folder);
+                        //timer.Dispose();
+                        //ProgressValue = 100;
+                        //ProgressValue = 0;
+                    }
+                    else
+                        MessageBox.Show("This folder has already been added");
+                
+                } 
+            //});
         }
 
         private int ImageSourceLength()

@@ -28,6 +28,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- C0 -->
+        
         <DockPanel Margin="2">
 
             <Button DockPanel.Dock="Bottom" Content="Add" 
@@ -39,17 +40,35 @@
                      ItemTemplate="{StaticResource listBoxItemTemplateFolder}"
                      ItemContainerStyle="{StaticResource listBoxItemStyleFolder}"/>
         </DockPanel>
+
+        <Border BorderBrush="RoyalBlue"
+                BorderThickness="0.5"
+                Margin="0 0 -5 0"
+                CornerRadius="30"
+                HorizontalAlignment="Right"/>
         
+
         <!-- C1 -->
-        <ListBox Grid.Column="1" Margin="2"
-                 HorizontalContentAlignment="Stretch"
-                 ScrollViewer.CanContentScroll="False"
-                 SelectedIndex="{Binding SelectedImgIndex}"
-                 SelectedItem="{Binding SelectedImage}"
-                 ItemsSource="{Binding SelectedFolder.Images}"
-                 ItemTemplate="{StaticResource listBoxItemTemplateImage}"/>
+        
+        <DockPanel Grid.Column="1"
+                   Margin="7 2 2 2">
+
+            <!--<ProgressBar DockPanel.Dock="Bottom"
+                         Height="20"
+                         Margin="0 0 0 2"
+                         Value="{Binding ProgressValue}"/>-->
+
+            <ListBox Margin="0 0 0 4"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.CanContentScroll="False"
+                     SelectedIndex="{Binding SelectedImgIndex}"
+                     SelectedItem="{Binding SelectedImage}"
+                     ItemsSource="{Binding SelectedFolder.Images}"
+                     ItemTemplate="{StaticResource listBoxItemTemplateImage}"/>
+        </DockPanel>
 
         <!-- C2 -->
+        
         <DockPanel Grid.Column="2">
 
             <UniformGrid Rows="1" DockPanel.Dock="Bottom">
