@@ -32,7 +32,6 @@ namespace ImageFileExplorerV2.ViewModels
                 GoLeftCommand.RaiseCanExecuteChanged();
             }
         }
-        //public int ProgressValue { get; set; }
 
 
         public RelayCommand AddFolderCommand { get; set; }
